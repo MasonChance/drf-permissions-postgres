@@ -8,6 +8,7 @@ authors = ["MasonChance <mason.fryberger@gmail.com>"]
 python = "^3.8"
 Django = "^3.1.7"
 django-environ = "^0.4.5"
+djangorestframework = "^3.12.2"
 
 [tool.poetry.dev-dependencies]
 black = {version = "^20.8b1", allow-prereleases = true}
