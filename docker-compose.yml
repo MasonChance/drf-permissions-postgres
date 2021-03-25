@@ -4,18 +4,29 @@ services:
   web:
     env_file: deck_api_perm_project/.env 
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: gunicorn deck_api_perm_project.wsgi:application --bind  0.0.0.0:8000 --workers 4
     volumes:
       - .:/code
+      - test-db 
     ports:
       - "8000:8000"
 
   db:
     image: postgres:11
+
+    volumes: 
+      - data:/var/lib/docker/volumes/test-db/_data
+
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
 
-  
+    
+volumes:
+  data:
+    external: true
+    name: test-db
+
+
  
