@@ -48,9 +48,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'deck',
     'rest_framework',
+    'corsheaders',
+   
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -58,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'deck_api_perm_project.urls'
@@ -87,11 +91,11 @@ WSGI_APPLICATION = 'deck_api_perm_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'db',
-        'PORT': 5432,
+        'NAME': env.str('NAME'),
+        'USER': env.str('USER'),
+        'PASSWORD': env.str('PASSWORD'),
+        'HOST': env.str('HOST'),
+        'PORT': env.int('PORT'),
     }
 }
 
@@ -134,8 +138,20 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
+    ], 
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
     ]
 }
+
+
+CORS_ORIGIN_WHITELIST = tuple(env.list("ALLOWED_ORIGINS"))
+CORS_ALLOW_ALL_ORIGINS = env.bool("ALLOW_ALL_ORIGINS")
